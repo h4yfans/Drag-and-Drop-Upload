@@ -16,6 +16,7 @@
 
 <script type="text/babel">
     import Uploads from './Uploads'
+    import eventHub from '../events.js'
     export default {
         data() {
             return {
@@ -70,13 +71,14 @@
                     },
                     progress: (e) => {
                         //emit progress
-                        console.log(e.loaded)
+                        eventHub.$emit('progress', fileObject, e)
                     }
                 }).then((response) => {
                     //emit finished
-                    console.log('finished')
+                    eventHub.$emit('finished', fileObject, e)
                 }, () => {
                     //emit failed
+                    eventHub.$emit('failed', fileObject, e)
                 })
             },
             storeMeta(file){
