@@ -64,6 +64,7 @@
 
 
                 // emit upload init
+                eventHub.$emit('init')
 
                 this.$http.post('http://localhost:3030/vueupload/upload.php', form, {
                     before: (xhr) => {

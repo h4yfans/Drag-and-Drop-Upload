@@ -14,10 +14,12 @@
 <script>
     import File from './File'
     import eventHub from '../events.js'
+    import timeremaining from '../helpers/timeremaining.js'
     export default{
         data(){
             return {
-                overallProgress: 0
+                overallProgress: 0,
+                interval: null
             }
         },
         props: [
@@ -41,7 +43,7 @@
                 return files
             },
             updateOverallProgress(){
-                var unfinishedFiles= this.unfinishedFile(), totalProgress= 0;
+                var unfinishedFiles = this.unfinishedFile(), totalProgress = 0;
                 //for each unfinished file
                 //total progress 400%
                 unfinishedFiles.forEach((file) => {
@@ -50,11 +52,28 @@
                 this.overallProgress = parseInt(totalProgress / unfinishedFiles.length || 0)
                 //total progress / unfinished file count
                 //otherwise 0
+            },
+            updateTimeRemaining(){
+                this.unfinishedFile().forEach((file) => {
+                    file.secondsRemaining = timeremaining.calculate(
+                            file.totalBytes,
+                            file.loadedBytes,
+                            file.timeStarted
+                    );
+                })
             }
         },
         mounted(){
             eventHub.$on('progress', (fileObject, e) => {
                 this.updateOverallProgress()
+            })
+
+            eventHub.$on('init', () => {
+                if (!this.interval) {
+                    this.interval = setInterval(() => {
+                        this.updateTimeRemaining()
+                    }, 1000)
+                }
             })
         }
     }
