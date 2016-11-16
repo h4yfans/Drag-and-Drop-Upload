@@ -22,4 +22,19 @@ export default {
         font-family: Arial, sans-serif;
     }
 
+    .list-inline{
+        list-style: none;
+        padding:0;
+        margin:0;
+    }
+
+    .list-inline__item{
+        display: inline;
+        margin-right:20px;
+    }
+
+    .list-inline__item--last{
+        margin-right: 0;
+    }
+
 </style>
