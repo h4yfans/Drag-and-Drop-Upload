@@ -1,8 +1,11 @@
 <template xmlns:v-bind="http://www.w3.org/1999/xhtml">
     <div class="dragndrop__file">
         <div class="progress">
-            <div class="progress_label">{{file.file.name}} ({{file.secondsRemaining}} seconds remaining)</div>
+            <div class="progress_label">
+                {{file.file.name}}
 
+                <span v-if="!file.failed && !file.finished && !file.cancelled">({{file.secondsRemaining}} seconds remaining)</span>
+            </div>
 
             <div
                     class="progress__fill"
