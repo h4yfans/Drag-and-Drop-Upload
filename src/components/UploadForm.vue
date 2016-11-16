@@ -42,11 +42,36 @@
                     file = files[i]
 
                     this.storeMeta(file).then((fileObject) => {
-
+                        //upload
+                        this.upload(fileObject)
                     }, (fileObject) => {
                         fileObject.failed = true
                     });
                 }
+            },
+            upload(fileObject){
+                var form = new FormData()
+
+                form.append('file', fileObject.file)
+                form.append('id', fileObject.id)
+
+
+                // emit upload init
+
+                this.$http.post('http://localhost:3030/vueupload/store.php', form, {
+                    before: (xhr) => {
+                        fileObject.xhr = xhr
+                    },
+                    progress: (e) => {
+                        //emit progress
+                        console.log(e.loaded)
+                    }
+                }).then((response) => {
+                    //emit finished
+                    console.log('finished')
+                }, () => {
+                    //emit failed
+                })
             },
             storeMeta(file){
                 var fileObject = this.generateFileObject(file);
@@ -65,19 +90,19 @@
             },
             generateFileObject(file){
                 var fileObjectIndex = this.files.push({
-                    id: null,
-                    file: file,
-                    progress: 0,
-                    failed: false,
-                    loadedBytes: 0,
-                    totalBytes: 0,
-                    timeStarted: (new Date).getTime(),
-                    secondsRemaining: 0,
-                    finished: false,
-                    cancelled: false,
-                    xhr: null
+                            id: null,
+                            file: file,
+                            progress: 0,
+                            failed: false,
+                            loadedBytes: 0,
+                            totalBytes: 0,
+                            timeStarted: (new Date).getTime(),
+                            secondsRemaining: 0,
+                            finished: false,
+                            cancelled: false,
+                            xhr: null
 
-                }) - 1
+                        }) - 1
 
                 return this.files[fileObjectIndex];
             }
