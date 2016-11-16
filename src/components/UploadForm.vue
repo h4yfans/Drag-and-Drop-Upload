@@ -6,19 +6,25 @@
          @dragend.prevent="leave" @drop.prevent="drop"
          v-bind:class="{ 'dragndrop--dragged' : isDraggedOver }">
         <input type="file" name="files[]" id="file" class="dragndrop__input" multiple v-on:change="select" ref="input">
-        <label for="file" class="dragndrop__header dragndrop__header--compact">
+        <label for="file" class="dragndrop__header" v-bind:class="{ 'dragndrop__header--compact': files.length >= 1  }">
             <strong>Drag files here</strong> or click to select files
         </label>
+
+        <uploads :files="files"></uploads>
     </div>
 </template>
 
 <script type="text/babel">
+    import Uploads from './Uploads'
     export default {
         data() {
             return {
                 files: [],
                 isDraggedOver: false
             }
+        },
+        components: {
+          Uploads
         },
         methods: {
             enter(){
@@ -58,7 +64,7 @@
 
                 // emit upload init
 
-                this.$http.post('http://localhost:3030/vueupload/store.php', form, {
+                this.$http.post('http://localhost:3030/vueupload/upload.php', form, {
                     before: (xhr) => {
                         fileObject.xhr = xhr
                     },
