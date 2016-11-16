@@ -25,6 +25,7 @@
                     {{file.progress}}%
                 </span>
             </div>
+            <a href="#" @click.prevent="cancel" v-if="!file.finished && !file.cancelled">Cancel</a>
         </div>
     </div>
 </template>
@@ -36,33 +37,37 @@
             'file'
         ],
         methods: {
-          updateFileObjectProgress (fileObject,e){
-              if (!e.lengthComputable){
-                  return
-              }
+            cancel(){
+                this.file.xhr.abort();
+                this.file.cancelled = true
+            },
+            updateFileObjectProgress (fileObject, e){
+                if (!e.lengthComputable) {
+                    return
+                }
 
-              fileObject.loadedBytes = e.loaded
-              fileObject.totalBytes = e.total
+                fileObject.loadedBytes = e.loaded
+                fileObject.totalBytes = e.total
 
-              fileObject.progress = Math.ceil((e.loaded / e.total) *100)
+                fileObject.progress = Math.ceil((e.loaded / e.total) * 100)
 
-              // console.log(fileObject.progress) 100deler
-          }
+                // console.log(fileObject.progress) 100deler
+            }
         },
         mounted(){
-            eventHub.$on('progress', (fileObject,e) => {
-                this.updateFileObjectProgress(fileObject,e)
+            eventHub.$on('progress', (fileObject, e) => {
+                this.updateFileObjectProgress(fileObject, e)
             })
 
             // array içerisindeki finsihed ve uploadform evethub
-            eventHub.$on('finished', (fileObject,e) => {
-                if(fileObject.id === this.file.id){
+            eventHub.$on('finished', (fileObject, e) => {
+                if (fileObject.id === this.file.id) {
                     this.file.finished = true
                 }
             })
 
-            eventHub.$on('failed', (fileObject,e) => {
-                if(fileObject.id === this.file.id){
+            eventHub.$on('failed', (fileObject, e) => {
+                if (fileObject.id === this.file.id) {
                     this.file.failed = true
                 }
             })
@@ -71,52 +76,52 @@
 </script>
 
 <style>
-    .dragndrop__file{
-        margin:0 20px 20px 20px;
-        font-size:.9em;
+    .dragndrop__file {
+        margin: 0 20px 20px 20px;
+        font-size: .9em;
         position: relative;
     }
 
-    .progress{
-        box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+    .progress {
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
         border-radius: 3px;
         background-color: #f5f5f5;
         height: 35px;
     }
 
     .progress_label,
-    .progress__percentage{
+    .progress__percentage {
         position: absolute;
         color: #333;
-        top:50%;
-        transform: translate(0,-50%);
-        margin-left:10px;
+        top: 50%;
+        transform: translate(0, -50%);
+        margin-left: 10px;
     }
 
-    .progress__percentage{
+    .progress__percentage {
         right: 0;
         margin-right: 10px;
     }
 
-    .progress__fill{
+    .progress__fill {
         box-sizing: border-box;
-        padding:10px;
+        padding: 10px;
         border-radius: 4px;
         background-color: #42b983;
-        width:60%;
-        height:100%;
-        box-shadow: inset 0 -1px rgba(0,0,0,.15);
+        width: 60%;
+        height: 100%;
+        box-shadow: inset 0 -1px rgba(0, 0, 0, .15);
         transition: width 500ms ease;
         opacity: .6;
     }
 
-    .progress__fill-failed{
-        transition:none;
+    .progress__fill-failed {
+        transition: none;
         width: 100% !important;
         background-color: #f66;
     }
 
-    .progress__fill--finished{
+    .progress__fill--finished {
         opacity: 1;
     }
 </style>
