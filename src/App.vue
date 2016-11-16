@@ -1,7 +1,6 @@
 <template>
     <div id="app">
-        <img src="./assets/logo.png">
-        <hello></hello>
+        <upload-form></upload-form>
     </div>
 </template>
 
@@ -15,4 +14,12 @@ export default {
   }
 }
 
+
 </script>
+
+<style>
+    body{
+        font-family: Arial, sans-serif;
+    }
+
+</style>
